@@ -30,7 +30,7 @@ def stats(request):
         klob[k] = request.GET.get(k)
 
     k = data_3v3.objects.distinct('pull_date').values_list('pull_date', flat=True)
-    dd {}
+    dd = {}
     for pull_date in k:
         j = {}
         top_N = int(request.GET.get('top'))
