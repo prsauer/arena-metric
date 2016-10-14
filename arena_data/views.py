@@ -29,7 +29,7 @@ def stats(request):
     for k in request.GET.keys():
         klob[k] = request.GET.get(k)
 
-    k = map(str, data_3v3.objects.distinct('pull_date').values_list('pull_date', flat=True))
+    k = data_3v3.objects.distinct('pull_date').values_list('pull_date', flat=True)
     dd = {}
     for pull_date in k:
         j = {}
@@ -47,7 +47,8 @@ def stats(request):
             if math.fabs(Z) > 1.96:
                 j[c.name] = (top_p, low_p, top_pop, low_pop, Z)
         dd[str(pull_date)] = j
-    rval = {'data': dd, 'dates': k}
+
+    rval = {'data': dd}
     #print data_3v3.objects.all().count()
     #dd = data_3v3.objects.filter(**klob).values_list('ranking', flat=True)
     #j = {"count": len(dd), "average": 1.0*sum(dd)/len(dd), "lowest": max(dd), "highest": min(dd)}
