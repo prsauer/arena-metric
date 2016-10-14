@@ -44,3 +44,7 @@ class data_3v3(PullDataModel):
             self.dec_class = ClassData.objects.get(pk=self.classId).name
             self.save()
         return self.name + " <" + self.dec_race + " " + self.dec_class + "> Rank " + str(self.ranking)
+
+from django.contrib import admin
+
+admin.site.register(data_3v3)
