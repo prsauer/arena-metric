@@ -29,22 +29,26 @@ def stats(request):
     for k in request.GET.keys():
         klob[k] = request.GET.get(k)
 
-    j = {}
-    top_N = int(request.GET.get('top'))
-    for c in ClassData.objects.all():
-        top_p = data_3v3.fresh.filter(ranking__lt=top_N, classId=c.id)
-        top_p = top_p.count()
-        top_pop = data_3v3.fresh.filter(ranking__lt=top_N).count()
+    k = data_3v3.objects.distinct('pull_date').values_list('pull_date', flat=True)
+    dd {}
+    for pull_date in k:
+        j = {}
+        top_N = int(request.GET.get('top'))
+        for c in ClassData.objects.all():
+            top_p = data_3v3.fresh.filter(ranking__lt=top_N, classId=c.id)
+            top_p = top_p.count()
+            top_pop = data_3v3.fresh.filter(ranking__lt=top_N).count()
 
-        low_p = data_3v3.fresh.filter(ranking__gt=2500, classId=c.id)
-        low_p = low_p.count()
-        low_pop = data_3v3.fresh.filter(ranking__gt=2500).count()
+            low_p = data_3v3.fresh.filter(ranking__gt=2500, classId=c.id)
+            low_p = low_p.count()
+            low_pop = data_3v3.fresh.filter(ranking__gt=2500).count()
 
-        Z = ztest(top_p, low_p, top_pop, low_pop)
-        if math.fabs(Z) > 1.96:
-            j[c.name] = (top_p, low_p, top_pop, low_pop, Z)
-
+            Z = ztest(top_p, low_p, top_pop, low_pop)
+            if math.fabs(Z) > 1.96:
+                j[c.name] = (top_p, low_p, top_pop, low_pop, Z)
+        dd[str(pull_date)] = j
+    rval = {'data': dd, 'dates': k}
     #print data_3v3.objects.all().count()
     #dd = data_3v3.objects.filter(**klob).values_list('ranking', flat=True)
     #j = {"count": len(dd), "average": 1.0*sum(dd)/len(dd), "lowest": max(dd), "highest": min(dd)}
-    return JsonResponse(j)
+    return JsonResponse(rval)
