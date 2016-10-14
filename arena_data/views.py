@@ -35,13 +35,13 @@ def stats(request):
         j = {}
         top_N = int(request.GET.get('top'))
         for c in ClassData.objects.all():
-            top_p = data_3v3.fresh.filter(ranking__lt=top_N, classId=c.id)
+            top_p = data_3v3.objects.filter(pull_date=k, ranking__lt=top_N, classId=c.id)
             top_p = top_p.count()
-            top_pop = data_3v3.fresh.filter(ranking__lt=top_N).count()
+            top_pop = data_3v3.objects.filter(pull_date=k, ranking__lt=top_N).count()
 
-            low_p = data_3v3.fresh.filter(ranking__gt=2500, classId=c.id)
+            low_p = data_3v3.objects.filter(pull_date=k, ranking__gt=2500, classId=c.id)
             low_p = low_p.count()
-            low_pop = data_3v3.fresh.filter(ranking__gt=2500).count()
+            low_pop = data_3v3.objects.filter(pull_date=k, ranking__gt=2500).count()
 
             Z = ztest(top_p, low_p, top_pop, low_pop)
             if math.fabs(Z) > 1.96:
