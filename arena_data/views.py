@@ -29,7 +29,7 @@ def stats(request):
     for k in request.GET.keys():
         klob[k] = request.GET.get(k)
 
-    k = data_3v3.objects.distinct('pull_date').values_list('pull_date', flat=True)
+    k = map(str, data_3v3.objects.distinct('pull_date').values_list('pull_date', flat=True))
     dd = {}
     for pull_date in k:
         j = {}
