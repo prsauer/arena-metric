@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from arena_data.models import data_3v3
@@ -21,7 +22,7 @@ def main(request):
     j = list()
     #j['data'] = list()
     for d in dd:
-        j.append ({"ranking": d.ranking, "rating": d.rating, "class": ClassData.objects.get(pk=d.classId).name, "race": RaceData.objects.get(pk=d.raceId).name})
+        j.append ({"id": d.id, "ranking": d.ranking, "rating": d.rating, "class": ClassData.objects.get(pk=d.classId).name, "race": RaceData.objects.get(pk=d.raceId).name})
     return JsonResponse(j, safe=False)
 
 def stats(request):
@@ -29,7 +30,12 @@ def stats(request):
     for k in request.GET.keys():
         klob[k] = request.GET.get(k)
 
-    k = data_3v3.objects.distinct('pull_date').values_list('pull_date', flat=True)
+    k = data_3v3.objects.order_by('pull_date').distinct('pull_date').values_list('pull_date', flat=True)
+
+    if settings.DEVEL:
+        #sqllite doesnt support .distinct!
+        k = data_3v3.objects.first().pull_date,
+
     dd = {}
     for pull_date in k:
         j = {}
