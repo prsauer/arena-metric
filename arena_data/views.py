@@ -11,14 +11,33 @@ def ztest(y1,y2,n1,n2):
     P=1.0*(y1+y2)/(n1+n2)
     return (p1 - p2)/math.sqrt( P*(1-P)*( (1.0/n1) + (1.0/n2) )   )
 
+def dates(request):
+    s = set()
+    k = data_3v3.objects.filter(classId=1, raceId=1).values_list('pull_date', flat=True)
+    for date in k:
+        print date
+        s.add(date)
+    d = list()
+    for date in s:
+        d.append(date.strftime("%Y-%m-%d-%H-%M"))
+    return JsonResponse(d, safe=False)
+
 # Create your views here.
 def main(request):
     klob = {}
     for k in request.GET.keys():
-        klob[k] = request.GET.get(k)
-
+        if k == 'pull_date':
+            parts = request.GET.get(k).split('-')
+            klob['pull_date__year']=parts[0]
+            klob['pull_date__month']=parts[1]
+            klob['pull_date__day']=parts[2]
+            klob['pull_date__hour']=parts[3]
+            klob['pull_date__minute']=parts[4]
+        else:
+            klob[k] = request.GET.get(k)
+    print k
     dd = data_3v3.objects.filter(**klob).order_by('ranking')[0:25]
-    print dd.last().__dict__
+    #print dd.last().__dict__
     j = list()
     #j['data'] = list()
     for d in dd:

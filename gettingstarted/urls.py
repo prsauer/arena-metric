@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^data/', arena_data.views.main, name='main'),
     url(r'^stats/', arena_data.views.stats, name='stats'),
+    url(r'^dates/', arena_data.views.dates, name='dates'),
 ]
