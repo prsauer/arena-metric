@@ -51,7 +51,7 @@ def main(request):
     j = list()
     #j['data'] = list()
     for d in dd:
-        j.append ({"id": d.id, "ranking": d.ranking, "rating": d.rating, "class": ClassData.objects.get(pk=d.classId).name, "race": RaceData.objects.get(pk=d.raceId).name})
+        j.append (d.toDict())
     return JsonResponse(j, safe=False)
 
 def stats(request):

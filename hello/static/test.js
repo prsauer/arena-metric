@@ -5,6 +5,8 @@ var Comment = React.createClass({
         <td>{this.props.ranking}</td>
         <td>{this.props.wowclass}</td>
         <td>{this.props.race}</td>
+        <td>{this.props.name}</td>
+        <td>{this.props.rating}</td>
       </tr>
     );
   }
@@ -61,9 +63,13 @@ var CommentBox = React.createClass({
   render: function() {
     console.log("CommentBox.render");
     return (
-      <div className="commentBox">
+      <div className="container">
+      <div className="col-md-2"></div>
+      <div className="col-md-8 commentBox">
         <CommentDateSelect ref={(child) => {this._child=child; }} data={this.state.dates} callme={this.callToPass}/>
         <CommentList data={this.state.data} />
+      </div>
+      <div className="col-md-2"></div>
       </div>
     );
   }
@@ -107,7 +113,7 @@ var CommentList = React.createClass({
   render: function() {
     var commentNodes = this.props.data.map(function(comment) {
       return (
-        <Comment wowclass={comment.class} ranking={comment.ranking} race={comment.race} key={comment.id}>
+        <Comment wowclass={comment.class} ranking={comment.ranking} race={comment.race} key={comment.id} name={comment.name} rating={comment.rating}>
         </Comment>
       );
     });
@@ -118,6 +124,8 @@ var CommentList = React.createClass({
         <th>Rank</th>
         <th>Class</th>
         <th>Race</th>
+        <th>Name</th>
+        <th>Rating</th>
       </tr>
     </thead>
     <tbody>

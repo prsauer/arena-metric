@@ -38,6 +38,15 @@ class data_3v3(PullDataModel):
     dec_race = models.CharField(max_length=256, null=True, default=None)
     dec_class = models.CharField(max_length=256, null=True, default=None)
 
+    def toDict(self):
+        return {"id": self.id,
+                "ranking": self.ranking,
+                "rating": self.rating,
+                "class": ClassData.objects.get(pk=self.classId).name,
+                "race": RaceData.objects.get(pk=self.raceId).name,
+                "name": self.name,
+                   }
+
     def __str__(self):
         if self.dec_race is None:
             self.dec_race = RaceData.objects.get(pk=self.raceId).name
