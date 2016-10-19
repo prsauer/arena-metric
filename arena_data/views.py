@@ -43,7 +43,10 @@ def main(request):
         else:
             klob[k] = request.GET.get(k)
     #print k
-    dd = data_3v3.objects.filter(**klob).order_by('ranking')[0:25]
+    if 'pull_date__year' in klob.keys():
+        dd = data_3v3.objects.filter(**klob).order_by('ranking')[0:25]
+    else:
+        dd = data_3v3.fresh.filter(**klob).order_by('ranking')[0:25]
     #print dd.last().__dict__
     j = list()
     #j['data'] = list()
