@@ -12,14 +12,21 @@ def ztest(y1,y2,n1,n2):
     return (p1 - p2)/math.sqrt( P*(1-P)*( (1.0/n1) + (1.0/n2) )   )
 
 def dates(request):
-    s = set()
-    k = data_3v3.objects.filter(classId=1, raceId=1).values_list('pull_date', flat=True)
+    set_of_dates = set()
+    k = data_3v3.objects.filter(classId=1,
+       raceId=1).order_by('pull_date').values_list('pull_date', flat=True)
     for date in k:
         print date
-        s.add(date)
+        set_of_dates.add(date)
     d = list()
-    for date in s:
+
+    set_of_dates = [x for x in set_of_dates]
+    set_of_dates.sort()
+    set_of_dates.reverse()
+
+    for date in set_of_dates:
         d.append(date.strftime("%Y-%m-%d-%H-%M"))
+
     return JsonResponse(d, safe=False)
 
 # Create your views here.
@@ -35,7 +42,7 @@ def main(request):
             klob['pull_date__minute']=parts[4]
         else:
             klob[k] = request.GET.get(k)
-    print k
+    #print k
     dd = data_3v3.objects.filter(**klob).order_by('ranking')[0:25]
     #print dd.last().__dict__
     j = list()

@@ -12,18 +12,24 @@ var Comment = React.createClass({
 
 var CommentBox = React.createClass({
   callToPass: function(d) {
-    if (d != this.state.date_filter) {
-      this.state.date_filter=d;
+    if (d != this.state.date_filter && d != []) {
+      this.state.date_filter = d;
+      //this.setState({date_filter: d});
       console.log("pls call me bb");
       console.log(d);
+      console.log(this.state);
       this.loadCommentsFromServer();
     }
   },
   loadDatesFromServer: function() {
+    console.log("loadDatesFromServer");
     $.ajax({
       url: '/dates/',
       success: function(data) {
+        console.log("loadDatesFromServer.returned");
         this.setState({dates: data});
+        this.setState({date_filter: data[0]});
+        this._child.pickFirst();
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -31,6 +37,8 @@ var CommentBox = React.createClass({
     });
   },
   loadCommentsFromServer: function() {
+    console.log("DATA:");
+    console.log(this.state.date_filter);
     $.ajax({
       url: '/data/',
       data: this.state.date_filter!=""?{pull_date: this.state.date_filter}:{},
@@ -46,13 +54,15 @@ var CommentBox = React.createClass({
     return {data: [], dates: [], date_filter: ""};
   },
   componentDidMount: function() {
+    console.log("CommentBox.CDM");
     this.loadCommentsFromServer();
     this.loadDatesFromServer();
   },
   render: function() {
+    console.log("CommentBox.render");
     return (
       <div className="commentBox">
-        <CommentDateSelect data={this.state.dates} callme={this.callToPass}/>
+        <CommentDateSelect ref={(child) => {this._child=child; }} data={this.state.dates} callme={this.callToPass}/>
         <CommentList data={this.state.data} />
       </div>
     );
@@ -61,9 +71,14 @@ var CommentBox = React.createClass({
 
 var CommentDateSelect = React.createClass({
   getInitialState: function() {
+
     return {selected: []};
   },
+  pickFirst: function() {
+    this.setState({selected: $('.dropdown-menu li a').first().text()});
+  },
   render: function() {
+    console.log("CommentDateSelect.render");
     var dateChoices = this.props.data.map(function(date) {
       return (
         <li><a href="#">{date}</a></li>
@@ -83,8 +98,8 @@ var CommentDateSelect = React.createClass({
     this.setState({selected: e.target.innerHTML});
   },
   componentDidUpdate: function() {
-    console.log("C_DID_UPDATE")
-    this.props.callme(this.state.selected)
+    console.log("CommentDateSelect.componentDidUpdate");
+    this.props.callme(this.state.selected);
   },
 });
 
