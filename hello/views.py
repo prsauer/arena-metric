@@ -14,6 +14,6 @@ def db(request):
 def pepe(request):
     r = {"response_type": "in_channel"}
     im = "http://i3.kym-cdn.com/photos/images/facebook/000/862/065/0e9.jpg"
-    attachments = [{"image": im},]
+    attachments = [{"image_url": im},]
     r['attachments'] = attachments
     return JsonResponse(r)
